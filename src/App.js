@@ -1,24 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
+import { getStockTimeSeriesIntraday } from './api';
+import React, { useEffect, useState } from 'react';
+import Chart from './components/Chart';
+const stocks = ['GME', 'AMC', 'WISH'];
 
 function App() {
+  const [stockData, setStockData] = useState(null);
+  useEffect(() => {
+    (async () => {
+      const stockResults = await getStockTimeSeriesIntraday(stocks);
+      setStockData(stockResults);
+    })();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      {!stockData ? null : stockData.map((stock, i) => <Chart stock={stock} key={i} />)}
+    </React.Fragment>
   );
 }
 
